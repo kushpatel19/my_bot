@@ -18,6 +18,7 @@ def generate_launch_description():
     # !!! MAKE SURE YOU SET THE PACKAGE NAME CORRECTLY !!!
 
     package_name='my_bot'
+    package_dir = get_package_share_directory(package_name)
 
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
@@ -25,11 +26,22 @@ def generate_launch_description():
                 )]), launch_arguments={'use_sim_time': 'true'}.items()
     )
 
+    #Rviz configuration file path
+    rviz = os.path.join(package_dir,'config' , 'drive_bot.rviz')
+    
+    node_rviz = Node(
+        package='rviz2',
+        executable='rviz2',
+        arguments=['-d', rviz],
+        output='screen'
+    )
+
     # Include the Gazebo launch file, provided by the gazebo_ros package
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
              )
+
 
     # Run the spawner node from the gazebo_ros package. The entity name doesn't really matter if you only have a single robot.
     spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
@@ -42,6 +54,7 @@ def generate_launch_description():
     # Launch them all!
     return LaunchDescription([
         rsp,
+        node_rviz,
         gazebo,
         spawn_entity,
     ])
