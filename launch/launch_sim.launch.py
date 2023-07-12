@@ -48,8 +48,6 @@ def generate_launch_description():
                                    '-entity', 'my_bot'],
                         output='screen')
 
-
-
     # Launch them all!
     return LaunchDescription([
         rsp,
